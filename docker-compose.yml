@@ -1,0 +1,46 @@
+services:
+  eureka_server:
+    build: "./eureka-server"
+  gateway_service:
+    build: "./gateway-service"
+    depends_on:
+      - eureka_server
+
+  transaction_service:
+    build: "./transaction-service"
+    depends_on:
+      - transaction_db
+      - eureka_server
+  user_service:
+    build: "./users-service"
+    depends_on:
+      - users_db
+      - eureka_server
+  wallet_service:
+    build: "./wallet-service"
+    depends_on:
+      - wallet_db
+      - eureka_server
+  transaction_db:
+    image: postgres:10
+    ports:
+      - "5433:5433"
+
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=transaction_service_bankly
+  users_db:
+    image: postgres:10
+    ports:
+      - "5433:5433"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=user_service_bankly
+  wallet_db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+

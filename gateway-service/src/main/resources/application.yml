@@ -1,0 +1,33 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+spring:
+  security:
+    csrf:
+      enabled: false
+  cloud:
+    gateway:
+      routes:
+      - id : wallet-service
+        uri: lb://WALLET-SERVICE
+        predicates :
+          - Path=/wallet/**
+        filters:
+          - AuthFilter
+      - id : transaction-service
+        uri: http://localhost:8090
+        predicates:
+          - Path=/transaction/**
+        filters:
+          - AuthFilter
+      - id: user-service
+        uri: http://localhost:8091/
+        predicates:
+          - Path=/user/**
+    discovery:
+      enabled: false
+  application:
+    name: gateway-service
+server:
+  port: 8888
